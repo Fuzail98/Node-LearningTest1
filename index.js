@@ -24,6 +24,39 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
+app.get("/api/:date", function (req, res) {
+  // your logic here
+  const dateParam = req.params.date;
+  
+  // If no date parameter is provided, use current date
+  let date;
+  if (!dateParam) {
+    date = new Date();
+  } else {
+    // Check if date is a number (in case of timestamp)
+    const timestamp = /^\d+$/.test(dateParam) ? parseInt(dateParam) : dateParam;
+    date = new Date(timestamp);
+  }
+
+  // Check if the date is valid
+  if (date.toString() === "Invalid Date") {
+    return res.json({ error: "Invalid Date" });
+  }
+
+  // Return the Unix timestamp in milliseconds and UTC string
+  res.json({
+    unix: date.getTime(), // Unix timestamp in milliseconds
+    utc: date.toUTCString() // UTC string format
+  });
+});
+
+app.get("/api", function (req,res){
+  const date = new Date()
+  res.send({
+    unix: date.getTime(),
+    utc: date.toUTCString()
+  })
+})
 
 
 // Listen on port set in environment variable or default to 3000
